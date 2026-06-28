@@ -1,5 +1,9 @@
 package com.dsa.practice.minheap;
 
+import java.util.Arrays;
+import java.util.List;
+import java.util.Objects;
+
 public class MinimumHeap {
 
     private final int[][] heapArray;
@@ -9,17 +13,39 @@ public class MinimumHeap {
     private int currPos;
 
     public MinimumHeap() {
-        heapArray = new int[100][];
+        heapArray = new int[20][];
         heapSize = 0;
         currLevel = 0;
         currPos = 0;
         heapArray[currLevel] = new int[1];
     }
 
+    public int getMin() throws Exception {
+        if (heapSize == 0) {
+            throw new Exception("Heap is Empty");
+        }
+        return heapArray[0][0];
+    }
+
+    public int popMin() throws Exception {
+        if (heapSize == 0) {
+            throw new Exception("Heap is Empty");
+        }
+        int min = heapArray[0][0];
+
+        //  TODO Implement delete min
+
+        return min;
+    }
+
+    public void insert(List<Integer> values) {
+        values.forEach(this::insert);
+    }
+
     public void insert(int value) {
 
         //  Check if current level is full, create next level with double size
-        if ((currLevel == 0 && currPos == 1) || (currPos == 2 * getParentLevelSize(currLevel))) {
+        if ((currLevel == 0 && currPos == 1) || (currLevel != 0 && currPos == 2 * getParentLevelSize(currLevel))) {
             currLevel++;
             currPos = 0;
             heapArray[currLevel] = new int[2 * getParentLevelSize(currLevel)];
@@ -57,6 +83,18 @@ public class MinimumHeap {
         int temp =  heapArray[level][pos];
         heapArray[level][pos] = heapArray[level - 1][pos / 2];
         heapArray[level - 1][pos / 2] = temp;
+    }
+
+    @Override
+    public String toString() {
+        StringBuilder sb = new StringBuilder();
+
+        Arrays.stream(heapArray)
+                .filter(Objects::nonNull)
+                .map(Arrays::toString)
+                .forEach(row -> sb.append(row).append("\n"));
+
+        return sb.toString();
     }
 
 }
