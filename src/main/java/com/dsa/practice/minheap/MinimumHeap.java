@@ -1,58 +1,22 @@
 package com.dsa.practice.minheap;
 
-import java.util.Arrays;
-import java.util.List;
-import java.util.Objects;
+import com.dsa.practice.Heap;
 
-public class MinimumHeap {
-
-    private final int[][] heapArray;
-    private int heapSize;
-
-    private int currLevel;
-    private int currPos;
+public class MinimumHeap extends Heap {
 
     public MinimumHeap() {
-        heapArray = new int[20][];
-        heapSize = 0;
-        currLevel = 0;
-        currPos = 0;
-        heapArray[currLevel] = new int[1];
-    }
-
-    public int getHeapSize() {
-        return heapSize;
+        super();
     }
 
     public int getMin() throws Exception {
-        if (heapSize == 0) {
-            throw new Exception("Heap is Empty");
-        }
-        return heapArray[0][0];
+        return get();
     }
 
     public int popMin() throws Exception {
-        if (heapSize == 0) {
-            throw new Exception("Heap is Empty");
-        }
-        int min = heapArray[0][0];
-        heapArray[0][0] = getLastElement();
-        heapArray[currLevel][currPos - 1] = 0;
-        currPos--;
-        heapSize--;
-        if (currPos == 0) {
-            currPos = getParentLevelSize(currLevel);
-            heapArray[currLevel] = null;
-            currLevel--;
-        }
-        heapify(0, 0);
-        return min;
+        return pop();
     }
 
-    public void insert(List<Integer> values) {
-        values.forEach(this::insert);
-    }
-
+    @Override
     public void insert(int value) {
 
         //  Check if current level is full, create next level with double size
@@ -79,18 +43,8 @@ public class MinimumHeap {
         }
     }
 
-    private int getParentLevelSize(int level) {
-        return level == 0 ? 0 : heapArray[level - 1].length;
-    }
-
-    private int getLastElement() throws Exception {
-        if (heapSize == 0) {
-            throw new Exception("Heap is Empty");
-        }
-        return heapArray[currLevel][currPos - 1];
-    }
-
-    private void heapify(int level, int pos) throws Exception {
+    @Override
+    protected void heapify(int level, int pos) throws Exception {
 
         if (level == currLevel || !hasLeftChild(level, pos)) {
             return;
@@ -113,46 +67,6 @@ public class MinimumHeap {
             swapElementWithParent(level + 1, pos * 2);
             heapify(level + 1, pos * 2);
         }
-    }
-
-    private boolean hasLeftChild(int level, int pos) {
-        return level + 1 < currLevel || (level + 1 == currLevel && pos * 2 < currPos);
-    }
-
-    private boolean hasRightChild(int level, int pos) {
-        return level + 1 < currLevel || (level + 1 == currLevel && (pos * 2) + 1 < currPos);
-    }
-
-    private int getLeftChild(int level, int pos) throws Exception {
-        if (level == currLevel || (level + 1 == currLevel && pos * 2 >= currPos)) {
-            throw new Exception("Left Child not exists");
-        }
-        return heapArray[level + 1][pos * 2];
-    }
-
-    private int getRightChild(int level, int pos) throws Exception {
-        if (level == currLevel || (level + 1 == currLevel && (pos * 2) + 1 >= currPos)) {
-            throw new Exception("Left Child not exists");
-        }
-        return heapArray[level + 1][pos * 2 + 1];
-    }
-
-    private void swapElementWithParent(int level, int pos) {
-        int temp =  heapArray[level][pos];
-        heapArray[level][pos] = heapArray[level - 1][pos / 2];
-        heapArray[level - 1][pos / 2] = temp;
-    }
-
-    @Override
-    public String toString() {
-        StringBuilder sb = new StringBuilder();
-
-        Arrays.stream(heapArray)
-                .filter(Objects::nonNull)
-                .map(Arrays::toString)
-                .forEach(row -> sb.append(row).append("\n"));
-
-        return sb.toString();
     }
 
 }
