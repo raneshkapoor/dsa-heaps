@@ -3,7 +3,12 @@ package com.dsa.practice.minheap;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
+import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Random;
+import java.util.Set;
+import java.util.stream.IntStream;
 
 public class MinimumHeapTest {
 
@@ -74,6 +79,33 @@ public class MinimumHeapTest {
         Assertions.assertEquals(40, minHeap.popMin());
         Assertions.assertEquals(50, minHeap.popMin());
         Assertions.assertEquals(55, minHeap.popMin());
+    }
+
+    @Test
+    void testMinimumHeapLoadTest() throws Exception {
+
+        List<Integer> data = getRandomList(10000);
+
+        MinimumHeap minHeap = new MinimumHeap();
+        minHeap.insert(data);
+
+        int previous = minHeap.popMin();
+        int current;
+
+        while (!minHeap.isEmpty()) {
+            current = minHeap.popMin();
+            Assertions.assertTrue(current > previous);
+            previous = current;
+        }
+    }
+
+    private List<Integer> getRandomList(int limit) {
+        Set<Integer> set = new HashSet<>();
+        Random random = new Random();
+
+        IntStream.range(0, limit).forEach(i -> set.add(random.nextInt(limit)));
+
+        return new ArrayList<>(set);
     }
 
 }

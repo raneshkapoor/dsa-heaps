@@ -20,6 +20,10 @@ public abstract class Heap {
         heapArray[currLevel] = new int[1];
     }
 
+    public boolean isEmpty() {
+        return heapSize == 0;
+    }
+
     public int getHeapSize() {
         return heapSize;
     }

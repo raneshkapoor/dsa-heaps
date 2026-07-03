@@ -3,7 +3,12 @@ package com.dsa.practice.maxheap;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
+import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Random;
+import java.util.Set;
+import java.util.stream.IntStream;
 
 public class MaximumHeapTest {
 
@@ -70,6 +75,33 @@ public class MaximumHeapTest {
         Assertions.assertEquals(55, maxHeap.popMax());
         Assertions.assertEquals(40, maxHeap.popMax());
         Assertions.assertEquals(30, maxHeap.popMax());
+    }
+
+    @Test
+    void testMaximumHeapLoadTest() throws Exception {
+
+        List<Integer> data = getRandomList(10000);
+
+        MaximumHeap minHeap = new MaximumHeap();
+        minHeap.insert(data);
+
+        int previous = minHeap.popMax();
+        int current;
+
+        while (!minHeap.isEmpty()) {
+            current = minHeap.popMax();
+            Assertions.assertTrue(current < previous);
+            previous = current;
+        }
+    }
+
+    private List<Integer> getRandomList(int limit) {
+        Set<Integer> set = new HashSet<>();
+        Random random = new Random();
+
+        IntStream.range(0, limit).forEach(i -> set.add(random.nextInt(limit)));
+
+        return new ArrayList<>(set);
     }
 
 }
