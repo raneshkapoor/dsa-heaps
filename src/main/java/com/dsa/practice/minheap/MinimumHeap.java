@@ -20,6 +20,10 @@ public class MinimumHeap {
         heapArray[currLevel] = new int[1];
     }
 
+    public int getHeapSize() {
+        return heapSize;
+    }
+
     public int getMin() throws Exception {
         if (heapSize == 0) {
             throw new Exception("Heap is Empty");
@@ -32,9 +36,16 @@ public class MinimumHeap {
             throw new Exception("Heap is Empty");
         }
         int min = heapArray[0][0];
-
-        //  TODO Implement delete min
-
+        heapArray[0][0] = getLastElement();
+        heapArray[currLevel][currPos - 1] = 0;
+        currPos--;
+        heapSize--;
+        if (currPos == 0) {
+            currPos = getParentLevelSize(currLevel);
+            heapArray[currLevel] = null;
+            currLevel--;
+        }
+        heapify(0, 0);
         return min;
     }
 
@@ -72,11 +83,58 @@ public class MinimumHeap {
         return level == 0 ? 0 : heapArray[level - 1].length;
     }
 
-    private int getParentElement(int level, int pos) {
-        if (level == 0) {
-            return heapArray[0][0];
+    private int getLastElement() throws Exception {
+        if (heapSize == 0) {
+            throw new Exception("Heap is Empty");
         }
-        return heapArray[level - 1][pos / 2];
+        return heapArray[currLevel][currPos - 1];
+    }
+
+    private void heapify(int level, int pos) throws Exception {
+
+        if (level == currLevel || !hasLeftChild(level, pos)) {
+            return;
+        }
+        if (hasRightChild(level, pos)) {
+
+            int leftChild = getLeftChild(level, pos);
+            int rightChild = getRightChild(level, pos);
+
+            if (leftChild < heapArray[level][pos] || rightChild < heapArray[level][pos]) {
+                if (leftChild < rightChild) {
+                    swapElementWithParent(level + 1, pos * 2);
+                    heapify(level + 1, pos * 2);
+                } else {
+                    swapElementWithParent(level + 1, pos * 2 + 1);
+                    heapify(level + 1, pos * 2 + 1);
+                }
+            }
+        } else if (hasLeftChild(level, pos) && getLeftChild(level, pos) < heapArray[level][pos]) {
+            swapElementWithParent(level + 1, pos * 2);
+            heapify(level + 1, pos * 2);
+        }
+    }
+
+    private boolean hasLeftChild(int level, int pos) {
+        return level + 1 < currLevel || (level + 1 == currLevel && pos * 2 < currPos);
+    }
+
+    private boolean hasRightChild(int level, int pos) {
+        return level + 1 < currLevel || (level + 1 == currLevel && (pos * 2) + 1 < currPos);
+    }
+
+    private int getLeftChild(int level, int pos) throws Exception {
+        if (level == currLevel || (level + 1 == currLevel && pos * 2 >= currPos)) {
+            throw new Exception("Left Child not exists");
+        }
+        return heapArray[level + 1][pos * 2];
+    }
+
+    private int getRightChild(int level, int pos) throws Exception {
+        if (level == currLevel || (level + 1 == currLevel && (pos * 2) + 1 >= currPos)) {
+            throw new Exception("Left Child not exists");
+        }
+        return heapArray[level + 1][pos * 2 + 1];
     }
 
     private void swapElementWithParent(int level, int pos) {
